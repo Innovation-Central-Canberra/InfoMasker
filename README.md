@@ -2,7 +2,7 @@
 
 This repo corresponds to the paper "InfoMasker: Preventing Eavesdropping Using Phoneme-Based Noise". Here we provide the method to generate our noise and relevant codes.
 
-We also provide audio samples generated in digital domain and samples recorded in real-world scenarios in this [Demo Page](https://infomasker2023.github.io/) for better demonstration.
+We also provide audio samples generated in digital domain and samples recorded in real-world scenarios in this [Demo Page](https://desperado1999.github.io/projects/) for better demonstration.
 
 ![Overview of InfoMasker](images/introduction.png "Overview of InfoMasker")
 
