@@ -1,30 +1,39 @@
 import os
 import csv
-from textgrids import TextGrid
+from textgrid import TextGrid
 
 DATASET_PATH = './phoenme_data_example/train-clean-100'
 FORCED_ALIGNER_PATH = './Prosodylab-Aligner'
 
 def extract_phoneme_for_dataset():
-    root_path = DATASET_PATH
-    dirs = os.listdir(root_path)
-    for item in dirs:
-        people_path = os.path.join(root_path, item)
-        people_folders = os.listdir(people_path)
-        for book in people_folders:
-            book_path = os.path.join(people_path, book)
-            book_folder = os.listdir(book_path)
-            for transcript in book_folder:
-                folder_path = os.path.join(book_path, transcript)
-                os.chdir(FORCED_ALIGNER_PATH)
-                extract_phoneme(folder_path)
+    # root_path = DATASET_PATH
+    # dirs = os.listdir(root_path)
+    # for item in dirs:
+    #     people_path = os.path.join(root_path, item)
+    #     people_folders = os.listdir(people_path)
+    #     for book in people_folders:
+    #         book_path = os.path.join(people_path, book)
+    #         book_folder = os.listdir(book_path)
+    #         for transcript in book_folder:
+    #             folder_path = os.path.join(book_path, transcript)
+    #             os.chdir(FORCED_ALIGNER_PATH)
+    #             extract_phoneme(folder_path)
+
+    folder_path = "Test_Transcript/"
+    os.chdir(FORCED_ALIGNER_PATH)
+    extract_phoneme(folder_path)
 
 def extract_phoneme(folder_path):
+    
     # Try to align the wav file with transcript.
     # OOV ERROR means there are words in the file but not in the dict
     # Todo: What to do if there are words in the file but not in the dict
     try:
+        print("5")
+
         os.system('python -m aligner -r eng.zip -a ' + folder_path + ' -d eng.dict')
+        print("6")
+
     except:
         print('OOV ERROR!')
     
@@ -35,12 +44,19 @@ def extract_phoneme(folder_path):
 
     ## Read the TextGrid file
     try:
-        grid = TextGrid(folder_path + '/file.TextGrid')
+        print("1")
+        grid = TextGrid.fromFile(folder_path + '/file.TextGrid')
+        print("2")
+
     except:
+        print("3")
+
         os.system('rm -rf '+ folder_path)
+        print("4")
+
         print('NO FILE ERROR!')
     else:
-        phoneme = grid['phones']
+        phoneme = grid.getFirst('phones')
         
         # write the vowels and consontants to two csv files 
         vowelFile = open(folder_path + '/vowel.csv', 'w', newline = '')
@@ -50,10 +66,10 @@ def extract_phoneme(folder_path):
         consonantWriter = csv.writer(consonantFile)
         
         for item in phoneme:
-            if(item.text in vowels):
-                vowelWriter.writerow([item.text] + [str(item.xmin)] + [str(item.xmax)])
-            elif(item.text in consonants):
-                consonantWriter.writerow([item.text] + [str(item.xmin)] + [str(item.xmax)])
+            if(item.mark in vowels):
+                vowelWriter.writerow([item.mark] + [str(item.minTime)] + [str(item.maxTime)])
+            elif(item.mark in consonants):
+                consonantWriter.writerow([item.mark] + [str(item.minTime)] + [str(item.maxTime)])
     return 0
 
 if __name__ == '__main__':
