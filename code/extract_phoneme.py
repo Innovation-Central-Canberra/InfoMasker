@@ -18,21 +18,25 @@ def extract_phoneme_for_dataset():
     #             folder_path = os.path.join(book_path, transcript)
     #             os.chdir(FORCED_ALIGNER_PATH)
     #             extract_phoneme(folder_path)
+    cwd = os.getcwd()
+    folder_path = os.path.join(cwd, "Test_Transcript")
 
-    folder_path = "Test_Transcript/"
+    #print(os.listdir(folder_path))
+    #print(os.listdir(os.path.dirname(__file__)))
+
+
+    
     os.chdir(FORCED_ALIGNER_PATH)
     extract_phoneme(folder_path)
 
 def extract_phoneme(folder_path):
-    
+    # print(folder_path)
     # Try to align the wav file with transcript.
     # OOV ERROR means there are words in the file but not in the dict
     # Todo: What to do if there are words in the file but not in the dict
     try:
-        print("5")
-
-        os.system('python -m aligner -r eng.zip -a ' + folder_path + ' -d eng.dict')
-        print("6")
+        #print(os.listdir(folder_path))
+        os.system(f'python -m aligner -r eng.zip -a "{folder_path}" -d eng.dict')
 
     except:
         print('OOV ERROR!')
@@ -44,16 +48,9 @@ def extract_phoneme(folder_path):
 
     ## Read the TextGrid file
     try:
-        print("1")
         grid = TextGrid.fromFile(folder_path + '/file.TextGrid')
-        print("2")
-
     except:
-        print("3")
-
-        os.system('rm -rf '+ folder_path)
-        print("4")
-
+        #os.system('rm -rf '+ folder_path)
         print('NO FILE ERROR!')
     else:
         phoneme = grid.getFirst('phones')
